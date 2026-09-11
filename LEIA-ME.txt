@@ -1,0 +1,15 @@
+MEU TREINO — EDIÇÃO SILO
+
+1. Extraia o ZIP. Envie index.html, silo.css, manifest.json, sw.js, todos os ícones e a pasta assets para a mesma pasta da hospedagem.
+2. Acesse o endereço por HTTPS e use “Instalar app” / “Adicionar à tela inicial”. No iPhone, use Compartilhar > Adicionar à Tela de Início no Safari.
+3. Para atualizar uma instalação existente, mantenha o mesmo domínio e caminho. Substitua os arquivos, abra com internet e reabra o app após a primeira carga para ativar o novo cache.
+4. Antes de substituir, exporte um backup em Configurar > Exportar backup. As mesmas chaves de armazenamento foram preservadas. Os dados ficam no navegador/dispositivo; mudar de endereço ou limpar os dados do site não transfere o histórico. Importe o backup quando necessário.
+
+INCLUÍDO
+- HTML completo, treinos A / B / C / E / D, ficha, carrossel, cargas, histórico e backup.
+- Fotos existentes dos exercícios embutidas no HTML e links de vídeo existentes.
+- Tema industrial com elementos extraídos das imagens fornecidas.
+- Ícones 192/512, ícone maskable com margem de segurança, Apple Touch Icon e favicon.
+- Cache offline do HTML, CSS, fotos embutidas, ícones e elementos visuais após a primeira abertura online. Os vídeos externos precisam de internet.
+
+O arquivo original de treinos e suas prescrições foram mantidos. A interface de referência foi usada como direção visual; nomes, contagens e progresso são dados reais do aplicativo.
