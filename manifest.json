@@ -1,42 +1,24 @@
 {
-  "id": "./",
-  "name": "Meu Treino",
+  "name": "Meu Treino · Forge",
   "short_name": "Meu Treino",
-  "description": "Aplicativo pessoal para acompanhar treinos, cargas e evolução.",
-  "lang": "pt-BR",
+  "description": "Aplicativo pessoal para acompanhar treinos A/B/C/D, cargas e recomendações.",
   "start_url": "./index.html",
-  "scope": "./",
   "display": "standalone",
-  "display_override": [
-    "standalone",
-    "minimal-ui"
-  ],
-  "orientation": "portrait-primary",
-  "background_color": "#060c0f",
-  "theme_color": "#091416",
-  "categories": [
-    "fitness",
-    "health",
-    "lifestyle"
-  ],
+  "background_color": "#071014",
+  "theme_color": "#0a1216",
+  "orientation": "portrait",
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "./icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any"
+      "purpose": "any maskable"
     },
     {
-      "src": "icon-512.png",
+      "src": "./icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "icon-maskable-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
+      "purpose": "any maskable"
     }
   ]
 }
