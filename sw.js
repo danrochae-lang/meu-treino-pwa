@@ -1,34 +1,5 @@
-const CACHE_NAME = 'meu-treino-forge-v7';
-const APP_SHELL = [
-  './',
-  './index.html',
-  './manifest.json',
-  './icon-192.png',
-  './icon-512.png',
-  './icone.png',
-  './favicon.png'
-];
-
-self.addEventListener('install', event => {
-  event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(APP_SHELL)).then(() => self.skipWaiting()));
-});
-
-self.addEventListener('activate', event => {
-  event.waitUntil(
-    caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))).then(() => self.clients.claim())
-  );
-});
-
-self.addEventListener('fetch', event => {
-  if (event.request.method !== 'GET') return;
-  event.respondWith(
-    caches.match(event.request).then(cached => {
-      const networkFetch = fetch(event.request).then(response => {
-        const copy = response.clone();
-        caches.open(CACHE_NAME).then(cache => cache.put(event.request, copy));
-        return response;
-      }).catch(() => cached);
-      return cached || networkFetch;
-    })
-  );
-});
+const CACHE='meu-treino-silo-v8';
+const FILES=["./", "./index.html", "./manifest.json", "./icon-192.png", "./icon-512.png", "./icone.png", "./favicon.png", "./assets/exercicios/cadeira-extensora.jpg", "./assets/exercicios/peck-invertido.jpg", "./assets/exercicios/elevacao-lateral.jpg", "./assets/exercicios/leg-press.jpg", "./assets/exercicios/bird-dog.jpg", "./assets/exercicios/puxada-triangulo.jpg", "./assets/exercicios/pulley-frente.jpg", "./assets/exercicios/remada-maquina-apoio.jpg", "./assets/exercicios/cadeira-adutora.jpg", "./assets/exercicios/cadeira-flexora.jpg", "./assets/exercicios/panturrilha-maquina.jpg", "./assets/exercicios/triceps-maquina.jpg", "./assets/exercicios/dead-bug.jpg", "./assets/exercicios/supino-inclinado.jpg", "./assets/exercicios/supino-reto-maquina.jpg", "./assets/exercicios/rosca-martelo.jpg", "./assets/exercicios/elevacao-pelvica.jpg", "./assets/exercicios/crucifixo-maquina.jpg", "./assets/exercicios/cadeira-abdutora.jpg", "./assets/exercicios/rosca-alternada.jpg", "./assets/exercicios/crucifixo-inclinado.jpg"];
+self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(FILES)).then(()=>self.skipWaiting())));
+self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==CACHE).map(x=>caches.delete(x)))).then(()=>self.clients.claim())));
+self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;e.respondWith(caches.match(e.request).then(c=>c||fetch(e.request).then(r=>{const cp=r.clone();caches.open(CACHE).then(cc=>cc.put(e.request,cp));return r}).catch(()=>c)))})
