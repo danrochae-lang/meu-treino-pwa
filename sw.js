@@ -1,4 +1,4 @@
-const CACHE='meu-treino-silo-v10-assets-fixed';
+const CACHE='meu-treino-silo-v11-theme-selector';
 const FILES=["./", "./index.html", "./manifest.json", "./icon-192.png", "./icon-512.png", "./icone.png", "./favicon.png", "./cadeira-extensora.jpg", "./peck-invertido.jpg", "./elevacao-lateral.jpg", "./leg-press.jpg", "./bird-dog.jpg", "./puxada-triangulo.jpg", "./pulley-frente.jpg", "./remada-maquina-apoio.jpg", "./cadeira-adutora.jpg", "./cadeira-flexora.jpg", "./panturrilha-maquina.jpg", "./triceps-maquina.jpg", "./dead-bug.jpg", "./supino-inclinado.jpg", "./supino-reto-maquina.jpg", "./rosca-martelo.jpg", "./elevacao-pelvica.jpg", "./crucifixo-maquina.jpg", "./cadeira-abdutora.jpg", "./rosca-alternada.jpg", "./crucifixo-inclinado.jpg"];
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(FILES)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x.startsWith('meu-treino-silo-')&&x!==CACHE).map(x=>caches.delete(x)))).then(()=>self.clients.claim())));
