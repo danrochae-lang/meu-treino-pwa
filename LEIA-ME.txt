@@ -1,0 +1,7 @@
+MEU TREINO / SILO — Visual refinado
+
+Extraia o ZIP e substitua os arquivos na mesma pasta do seu GitHub Pages, incluindo assets.
+Mantenha o endereço original do site para preservar as cargas salvas neste navegador.
+Abra o site conectado após a atualização e reabra o app. O conteúdo fica disponível offline após o primeiro carregamento completo. Links do YouTube precisam de internet.
+
+As fichas A/B/C e as imagens foram mantidas. Próximo treino abre a ficha; Continuar treino pula os exercícios já concluídos hoje. Toque no aviso de descanso para cancelar o temporizador.
