@@ -1,7 +1,14 @@
-MEU TREINO / SILO — Visual refinado
+MEU TREINO / SILO — V13 (PWA web)
 
-Extraia o ZIP e substitua os arquivos na mesma pasta do seu GitHub Pages, incluindo assets.
-Mantenha o endereço original do site para preservar as cargas salvas neste navegador.
-Abra o site conectado após a atualização e reabra o app. O conteúdo fica disponível offline após o primeiro carregamento completo. Links do YouTube precisam de internet.
+PUBLICAÇÃO
+Extraia o ZIP e envie TODOS os arquivos para a raiz da branch/pasta usada pelo GitHub Pages. Inclua index.html, drive.js, progress.js, sw.js, manifest.json, ícones e todas as fotos JPG. Não envie apenas o ZIP.
+Mantenha o endereço do site para preservar os dados já gravados neste navegador. Abra o site online após atualizar; o PWA carrega os arquivos para uso offline. Os links de vídeos e o backup no Google Drive precisam de internet.
 
-As fichas A/B/C e as imagens foram mantidas. Próximo treino abre a ficha; Continuar treino pula os exercícios já concluídos hoje. Toque no aviso de descanso para cancelar o temporizador.
+O QUE MUDOU
+Treinos em lista: toque no exercício para abrir os detalhes na mesma tela. Registre carga (kg) e repetições de cada série; marcar a última série conclui o exercício. Em Histórico, escolha treino/exercício e acompanhe carga máxima e repetições totais dos dias com séries marcadas.
+
+BACKUP GOOGLE DRIVE
+Crie um projeto Google Cloud, habilite Google Drive API e configure uma tela de consentimento OAuth. Crie um Client ID do tipo aplicativo Web e autorize a origem exata do site, por exemplo https://SEU-USUARIO.github.io (sem caminho do repositório). Se estiver em modo de teste, inclua sua conta como usuário de teste. No PWA, abra Ajustes, informe o Client ID e use Salvar backup ou Restaurar backup. O escopo solicitado é drive.appdata; o arquivo fica em uma área privada do app, não em Meu Drive. Confirme a restauração: ela substitui os dados locais do app.
+
+APK / CRONÔMETRO
+Este pacote é o PWA web, não um APK. Com o PWA aberto, o cronômetro usa o horário real para corrigir a contagem e tenta notificar/vibrar quando termina. Com o processo suspenso pelo Android, o aviso final não é garantido. Para uma notificação contínua confiável no S24 Ultra, o APK precisa de um serviço nativo em primeiro plano, permissão de notificação e ponte JavaScript SiloAndroid.startRestTimer(untilEpochMs) / SiloAndroid.stopRestTimer(). O login Google dentro de um WebView também exige um fluxo nativo aprovado, em navegador externo.
