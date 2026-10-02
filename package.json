@@ -1,0 +1,7 @@
+{
+  "name": "meu-treino-pwa",
+  "version": "14.0.0",
+  "private": true,
+  "scripts": {"test": "node tests/v14.cjs"},
+  "devDependencies": {"playwright": "1.62.1"}
+}

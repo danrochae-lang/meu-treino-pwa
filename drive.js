@@ -51,24 +51,6 @@
     const result = await (await driveRequest(url, accessToken)).json();
     return (result.files || []).sort((a, b) => b.modifiedTime.localeCompare(a.modifiedTime))[0] || null;
   }
-  function makeBackup() {
-    const data = {};
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i);
-      if (/^(carga::|peso_|done::|sets::|hist::sessions$|rest::seconds$|theme$)/.test(key)) data[key] = localStorage.getItem(key);
-    }
-    return JSON.stringify({ format: 'meu-treino-silo', version: 1, createdAt: new Date().toISOString(), data });
-  }
-  function validateBackup(backup) {
-    if (!backup || backup.format !== 'meu-treino-silo' || backup.version !== 1 || !backup.data || typeof backup.data !== 'object' || Array.isArray(backup.data)) throw new Error('Arquivo de backup incompatível.');
-    const entries = Object.entries(backup.data);
-    if (entries.length > 10000) throw new Error('Backup grande demais.');
-    for (const [key, value] of entries) {
-      if (!/^(carga::|peso_|done::|sets::|hist::sessions$|rest::seconds$|theme$)/.test(key) || typeof value !== 'string' || value.length > 1000000) throw new Error('Backup contém dados inválidos.');
-      if (/^(sets::|done::|hist::sessions$)/.test(key)) JSON.parse(value);
-    }
-    return entries;
-  }
   async function save(accessToken) {
     const existing = await findBackup(accessToken);
     const payload = makeBackup();
@@ -87,20 +69,16 @@
     const response = await driveRequest(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(file.id)}?alt=media`, accessToken);
     const entries = validateBackup(await response.json());
     if (!confirm(`Restaurar o backup de ${new Date(file.modifiedTime).toLocaleString('pt-BR')}? Cargas, histórico e repetições locais serão substituídos.`)) { message('Restauração cancelada.'); return; }
-    const keys = [];
-    for (let i = 0; i < localStorage.length; i++) keys.push(localStorage.key(i));
-    keys.filter(k => /^(carga::|peso_|done::|sets::|hist::sessions$|rest::seconds$|theme$)/.test(k)).forEach(k => localStorage.removeItem(k));
-    entries.forEach(([key, value]) => localStorage.setItem(key, value));
-    setTheme(localStorage.getItem('theme') || 'dark');
-    renderHome();
-    if (state.screen === 'sheet') drawInlineList();
-    if (state.screen === 'history') renderHistory();
+    restoreBackupEntries(entries);
     message('Backup restaurado. Seus treinos e cargas já estão disponíveis.');
   }
   async function run(action) {
+    document.getElementById('driveBackup').disabled = true;
+    document.getElementById('driveRestore').disabled = true;
     message('Conectando ao Google Drive…');
     try { const accessToken = await token(); await action(accessToken); }
     catch (error) { message(error.message || 'Falha na conexão com o Drive.'); }
+    finally { document.getElementById('driveBackup').disabled = false; document.getElementById('driveRestore').disabled = false; }
   }
   document.getElementById('driveBackup').onclick = () => run(save);
   document.getElementById('driveRestore').onclick = () => run(restore);

@@ -1,11 +1,11 @@
 {
-  "name": "Meu Treino // Bunker",
+  "name": "Meu Treino // Silo",
   "short_name": "Meu Treino",
-  "description": "Ficha pessoal de treinos A/B/C com registro de carga e instruções.",
+  "description": "Treinos A/B/C, variações e sessões flexíveis com séries, evolução e backup offline.",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#0b0d0c",
-  "theme_color": "#0c110e",
+  "background_color": "#101713",
+  "theme_color": "#101713",
   "orientation": "portrait",
   "icons": [
     {
@@ -20,5 +20,6 @@
       "type": "image/png",
       "purpose": "any maskable"
     }
-  ]
+  ],
+  "id": "./"
 }

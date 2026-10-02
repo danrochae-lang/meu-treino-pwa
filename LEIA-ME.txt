@@ -1,14 +1,29 @@
-MEU TREINO / SILO — V13 (PWA web)
+MEU TREINO / SILO — V14
 
-PUBLICAÇÃO
-Extraia o ZIP e envie TODOS os arquivos para a raiz da branch/pasta usada pelo GitHub Pages. Inclua index.html, drive.js, progress.js, sw.js, manifest.json, ícones e todas as fotos JPG. Não envie apenas o ZIP.
-Mantenha o endereço do site para preservar os dados já gravados neste navegador. Abra o site online após atualizar; o PWA carrega os arquivos para uso offline. Os links de vídeos e o backup no Google Drive precisam de internet.
+FICHAS
+A/B/C: rotina padrão preservada, com Leg Press retirado conforme a preferência informada e panturrilha substituída pela versão sentada. Os registros antigos dessas duas versões continuam nos gráficos do treino C.
+A2: peito horizontal e deltoide lateral, 5 exercícios.
+B2: remadas com apoio, costas médias e deltoide posterior, 6 exercícios, sem polia.
+C2: pernas unilateral, sóleo, glúteos e core, 6 exercícios.
+D: superiores equilibrados, 6 exercícios.
+E: corpo inteiro com ênfase em superiores, 6 exercícios.
 
-O QUE MUDOU
-Treinos em lista: toque no exercício para abrir os detalhes na mesma tela. Registre carga (kg) e repetições de cada série; marcar a última série conclui o exercício. Em Histórico, escolha treino/exercício e acompanhe carga máxima e repetições totais dos dias com séries marcadas.
+A2 substitui A, B2 substitui B e C2 substitui C. Não adicione a variação à ficha padrão no mesmo dia. D/E são alternativas pontuais para reorganizar a semana e não avançam automaticamente a sequência A/B/C. O app lembra a versão escolhida em cada família. O mapa corporal mostra áreas gerais; não representa percentuais de ativação nem garante segurança do exercício.
+As fichas novas são sugestões para validar com o profissional que acompanha a cirurgia/discopatia lombar. Máquinas apoiadas também exigem ajustes individuais de carga e amplitude; respeite a restrição de carregar peso. Unilateral somente em máquinas compatíveis. Core e ponte não usam carga externa. Interrompa em caso de dor, formigamento ou tontura.
+Referência geral para aquecimento, adaptação individual e não ignorar dor: American Academy of Orthopaedic Surgeons, Spine Conditioning Program — https://www.orthoinfo.org/recovery/spine-conditioning-program/ . Esta referência não valida a prescrição personalizada das fichas.
 
-BACKUP GOOGLE DRIVE
-Crie um projeto Google Cloud, habilite Google Drive API e configure uma tela de consentimento OAuth. Crie um Client ID do tipo aplicativo Web e autorize a origem exata do site, por exemplo https://SEU-USUARIO.github.io (sem caminho do repositório). Se estiver em modo de teste, inclua sua conta como usuário de teste. No PWA, abra Ajustes, informe o Client ID e use Salvar backup ou Restaurar backup. O escopo solicitado é drive.appdata; o arquivo fica em uma área privada do app, não em Meu Drive. Confirme a restauração: ela substitui os dados locais do app.
+REGISTROS
+Chaves de armazenamento da V13 mantidas: carga::, peso_, sets::, done:: e hist::sessions. IDs distintos para equipamentos/execuções diferentes; não copie automaticamente a carga de uma máquina para outra.
+Carga e repetições são salvas ao digitar. Todas as séries precisam estar marcadas para concluir automaticamente um exercício. Há conclusão manual, sem inventar séries, e Pular hoje, separado de Feito. Uma sessão só entra no histórico se resolver todos os exercícios e realizar pelo menos um deles. O histórico informa quantos foram pulados.
+Os gráficos usam somente séries marcadas: maior carga do dia ou soma das repetições registradas. Em exercícios por lado, a soma é por lado, conforme o registro. Cada ficha tem gráfico independente.
 
-APK / CRONÔMETRO
-Este pacote é o PWA web, não um APK. Com o PWA aberto, o cronômetro usa o horário real para corrigir a contagem e tenta notificar/vibrar quando termina. Com o processo suspenso pelo Android, o aviso final não é garantido. Para uma notificação contínua confiável no S24 Ultra, o APK precisa de um serviço nativo em primeiro plano, permissão de notificação e ponte JavaScript SiloAndroid.startRestTimer(untilEpochMs) / SiloAndroid.stopRestTimer(). O login Google dentro de um WebView também exige um fluxo nativo aprovado, em navegador externo.
+BACKUP
+Ajustes > Exportar/Importar gera e restaura JSON compatível com o formato V13. A importação valida os dados antes de substituir e tenta reverter se uma gravação falhar.
+O Google Drive conserva o nome e escopo do backup anterior, drive.appdata. Configure um cliente OAuth do tipo Web, habilite a API do Drive, autorize a origem exata do GitHub Pages e cadastre sua conta como usuário de teste se aplicável. A autenticação depende da configuração externa e precisa ser validada com sua conta real. Tokens permanecem apenas em memória.
+
+PUBLICAÇÃO E OFFLINE
+Envie index.html, styles.css, workouts.js, app.js, progress.js, backup.js, drive.js, sw.js, manifest.json, ícones e fotos para a mesma pasta usada atualmente no GitHub Pages. Não mude o domínio/caminho, para conservar os dados do navegador.
+Na primeira migração da V13, abra conectado, feche todas as janelas do PWA e abas do site e reabra: a V13 não tinha aviso de atualização. Da V14 em diante, uma nova versão aguarda o botão Atualizar agora; não substitui a aplicação durante a sessão automaticamente. Após preparar o cache, as fichas, fotos de referência e registros funcionam offline. Vídeos e Drive precisam de internet.
+
+CRONÔMETRO
+Usa horário real, mantém o término ao recarregar e permite +30s ou cancelar. O aviso final em segundo plano depende das permissões e da suspensão do processo pelo Android; não equivale a um serviço nativo ou Live Activity. A ponte SiloAndroid do APK anterior permanece compatível, mas este trabalho não altera o APK.
