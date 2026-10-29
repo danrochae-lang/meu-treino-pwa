@@ -13,6 +13,7 @@
 <link rel="apple-touch-icon" href="silo-icon.png">
 <link rel="stylesheet" href="styles.css">
 <script src="workouts.js" defer></script>
+<script src="principal.js" defer></script>
 <script src="app.js" defer></script>
 <script src="progress.js" defer></script>
 <script src="backup.js" defer></script>
@@ -23,10 +24,10 @@
 <section id="home" class="screen active" aria-label="Início">
   <header class="homeHeader"><div class="brand"><img src="icon-192.png" alt=""><div><span class="eyebrow">SILO / TRAINING SYSTEM</span><h1>Meu treino<span class="brandDot">.</span></h1></div></div><span class="statusPill" id="connectionStatus">Local</span></header>
   <div class="homeGreeting"><p>Seu próximo movimento.</p><span id="today"></span></div>
-  <article class="hero panel" id="nextCard"><div class="heroContent"><span class="eyebrow">SUA SEQUÊNCIA A → B → C</span><div class="heroTitle"><h2 id="nextWorkout">Treino A</h2><span class="heroTag" id="nextVariant">Padrão</span></div><p id="nextWorkoutSub"></p><div class="heroMetrics" id="heroMetrics"></div><button class="primary" id="openNext">Abrir treino <span aria-hidden="true">↗</span></button></div><div id="heroMap" class="heroMap"></div><div class="heroBottom" id="heroProgress"></div></article>
+  <article class="hero panel" id="nextCard"><div class="heroContent"><span class="eyebrow">PRINCIPAL · SEQUÊNCIA A → B → C → D</span><div class="heroTitle"><h2 id="nextWorkout">Treino A</h2><span class="heroTag" id="nextVariant">Principal</span></div><p id="nextWorkoutSub"></p><div class="heroMetrics" id="heroMetrics"></div><button class="primary" id="openNext">Abrir treino <span aria-hidden="true">↗</span></button></div><div id="heroMap" class="heroMap"></div><div class="heroBottom" id="heroProgress"></div></article>
   <div class="weekStrip" id="weekStrip" aria-label="Sessões nos últimos sete dias"></div>
-  <div class="sectionTitle"><div><span class="eyebrow">BIBLIOTECA</span><h2>Escolha sua sessão</h2></div><span class="tinyBadge">9 fichas</span></div>
-  <div class="segmented" role="group" aria-label="Categoria de treinos"><button data-library="base" aria-pressed="true">Lifetime</button><button data-library="classic" aria-pressed="false">Primata Fitness</button><button data-library="flex" aria-pressed="false">Full Body</button></div>
+  <div class="sectionTitle"><div><span class="eyebrow">BIBLIOTECA</span><h2>Escolha sua sessão</h2></div><span class="tinyBadge">7 fichas</span></div>
+  <div class="segmented" role="group" aria-label="Categoria de treinos"><button data-library="principal" aria-pressed="true">Principal</button><button data-library="base" aria-pressed="false">Lifetime</button></div>
   <p id="libraryHint" class="libraryHint"></p><div id="workoutGrid" class="workoutGrid"></div>
   <details class="panel guide"><summary><span>Orientações para o treino</span><span aria-hidden="true">+</span></summary><p>Respeite a recuperação e sua orientação individual. Aqueça antes do treino e ajuste as cargas e amplitudes de acordo com suas orientações.</p></details>
 </section>

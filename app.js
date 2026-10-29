@@ -1,7 +1,7 @@
 // Silo V14. As chaves da V13 são mantidas; variações têm sessões independentes.
 const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
-const state = { screen: 'home', workout: 'A', expanded: -1, library: 'base', timer: null, loadId: null, day: null };
+const state = { screen: 'home', workout: 'PR_A', expanded: -1, library: 'principal', timer: null, loadId: null, day: null };
 const restKey = 'rest::seconds', timerKey = 'rest::until';
 const REST_OPTIONS = [30, 45, 60, 90, 120, 180];
 let keyboardHideTimeout;
@@ -28,14 +28,13 @@ function getLoad(id) { const v = storageRead('carga::'+id) ?? storageRead('peso_
 function setLoad(id,v) { if (!storageWrite('carga::'+id,v)) return false; storageWrite('peso_'+id,v); return true; }
 function setCount(e) { return parseInt(e.sets,10) || 3; }
 function allSetsDone(sets,n) { return Array.from({length:n}, (_,i) => sets[i]?.done === true).every(Boolean); }
-function getRest(e) { const saved = Number(storageRead(restKey)); return REST_OPTIONS.includes(saved) ? saved : (parseInt(e.rest,10) || 60); }
+function getRest(e) { return parseInt(e.rest,10) || 60; }
 function processed(w) { const done = getDone(w); return DB[w].exercises.filter(e => done[e.id] === true || done[e.id] === 'skipped').length; }
 function getPreferred(family) { const key = storageRead('plan::'+family); return DB[key]?.family === family ? key : family; }
 function nextWorkout() {
-  const last = hist().slice().sort((a,b)=>b.at.localeCompare(a.at)).find(x => ['A','B','C'].includes(DB[x.workout]?.family || x.workout));
-  const seq = ['A','B','C'];
-  const family = last ? seq[(seq.indexOf(DB[last.workout]?.family || last.workout)+1)%3] : 'A';
-  return family;
+  const seq = ['PR_A','PR_B','PR_C','PR_D'];
+  const last = hist().slice().sort((a,b)=>b.at.localeCompare(a.at)).find(x => seq.includes(x.workout));
+  return last ? seq[(seq.indexOf(last.workout)+1)%seq.length] : seq[0];
 }
 function muscleMap(regions, label='Áreas trabalhadas') {
   const posterior = regions.includes('back') && !regions.includes('chest');
@@ -52,8 +51,8 @@ function show(screen) {
 function toast(message) { clearTimeout(state.toastTimeout); $('#toast').textContent=message; $('#toast').hidden=false; state.toastTimeout=setTimeout(()=>$('#toast').hidden=true,3500); }
 function renderHome() {
   const n=nextWorkout(),w=DB[n],count=processed(n),total=w.exercises.length;
-  $('#nextWorkout').textContent='Treino '+n; $('#nextVariant').textContent='Lifetime';
-  $('#nextWorkoutSub').textContent=w.name; $('#heroMetrics').innerHTML=`<span>${total} exercícios</span><span>~${w.duration} min</span>`;
+  $('#nextWorkout').textContent='Treino '+n.slice(-1); $('#nextVariant').textContent='Principal';
+  $('#nextWorkoutSub').textContent=w.name; $('#heroMetrics').innerHTML=`<span>${total} exercícios</span>${w.duration?`<span>~${w.duration} min</span>`:''}`;
   $('#heroMap').innerHTML=muscleMap(w.regions,w.focus);
   $('#heroProgress').innerHTML=`<span class="miniRing" style="--pct:${Math.round(count/total*100)}%"></span><span>${count ? `${count}/${total} exercícios resolvidos hoje` : 'Sua ficha está pronta para começar'}</span>`;
   $('#openNext').onclick=()=>openSheet(n);
@@ -64,24 +63,25 @@ function renderHome() {
   renderLibrary();
 }
 function renderLibrary() {
-  const keys={base:['A','B','C'],classic:['CL_A','CL_B','CL_C'],flex:['D','E','FB']}[state.library];
-  $('#libraryHint').textContent={base:'Sua rotina A/B/C.',classic:'Treinos A, B e C da Primata Fitness.',flex:'Alternativas de corpo inteiro e superiores.'}[state.library];
+  const keys={principal:['PR_A','PR_B','PR_C','PR_D'],base:['A','B','C']}[state.library];
+  $('#libraryHint').textContent={principal:'A sequência avança ao concluir cada ficha, sem dias fixos.',base:'Fichas Lifetime disponíveis para seleção manual.'}[state.library];
   $$('[data-library]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.library===state.library)));
   $('#workoutGrid').innerHTML=keys.map(k=>{const w=DB[k],n=processed(k);return `<button class="workoutBtn" data-w="${k}"><article class="panel workoutCard"><div class="workoutCode">${k}<small>${w.variant==='Padrão'?'BASE':'ALT'}</small></div><div><h3>${w.name}</h3><p class="cardFocus">${w.focus}</p><div class="cardMeta"><span>${w.exercises.length} exercícios</span><span>~${w.duration} min</span>${n?`<span>${n}/${w.exercises.length}</span>`:''}</div>${n?`<div class="cardProgress"><span style="width:${n/w.exercises.length*100}%"></span></div>`:''}</div><span class="arrow" aria-hidden="true">↗</span></article></button>`}).join('');
+  keys.forEach(k=>{const card=$(`[data-w="${k}"]`);if(k.startsWith('PR_')){card.querySelector('.workoutCode').innerHTML=`${k.slice(-1)}<small>PRINCIPAL</small>`;card.querySelector('.cardMeta span:nth-child(2)')?.remove();}});
   $$('[data-w]').forEach(b=>b.onclick=()=>openSheet(b.dataset.w));
 }
 function openSheet(k) {
   if(!DB[k])return;
   state.workout=k;state.expanded=-1;
   const w=DB[k];
-  $('#sheetTitle').textContent=k.startsWith('CL_')?'Primata '+k.slice(-1):k==='FB'?'Full Body':'Treino '+k; $('#sheetEyebrow').textContent=w.code;
+  $('#sheetTitle').textContent=k.startsWith('PR_')?'Treino '+k.slice(-1):'Treino '+k; $('#sheetEyebrow').textContent=w.code;
   $('#sheetSub').textContent=w.name; $('#sheetFocus').textContent=w.focus;
   const [poster, quadrant]=w.exercises[0].img.split('#');
   const overview=$('.sessionOverview');
   overview.style.backgroundImage=`linear-gradient(0deg,#09130df5,#09130d50),url("${poster}")`;
   overview.style.backgroundSize=quadrant===undefined?'cover':'100% 100%, 200% 200%';
   overview.style.backgroundPosition=quadrant===undefined?'center':`center, ${Number(quadrant)%2?'100%':'0%'} ${Number(quadrant)>1?'100%':'0%'}`;
-  $('#overviewMetrics').innerHTML=`<span>${w.exercises.length} exercícios</span><span>~${w.duration} min estimados</span>`;
+  $('#overviewMetrics').innerHTML=`<span>${w.exercises.length} exercícios</span>${w.duration?`<span>~${w.duration} min estimados</span>`:''}`;
   $('#sheetMap').innerHTML=muscleMap(w.regions,w.focus); $('#sheetCount').textContent=w.exercises.length+' EX';
   $('#warmup').textContent=w.warmup;$('#cardio').textContent=w.cardio;$('#note').textContent=w.note;
   const variants=[];
@@ -122,7 +122,9 @@ function drawInlineDetail(i) {
     root.querySelector('.trackerTitle').before(guide);
   }
   if(e.prefillLoad===false) root.querySelectorAll('[data-load]').forEach((input,j)=>{if(getSets(state.workout,e)[j]?.load==null)input.value='';});
-  $('#loadBtn')?.addEventListener('click',()=>openLoad(e));$('#restBtn').onclick=()=>startRestTimer(getRest(e));
+  const restHelp=document.createElement('p');restHelp.className='trackerHelp';restHelp.textContent=`Descanso sugerido: ${e.rest}.`;root.querySelector('.restControl').before(restHelp);
+  const videoLink=root.querySelector('.instruction');if(videoLink&&!e.videoDirect&&state.workout.startsWith('PR_'))videoLink.firstChild.textContent='Buscar vídeos de execução · YouTube ';
+  $('#loadBtn')?.addEventListener('click',()=>openLoad(e));$('#restBtn').onclick=()=>startRestTimer(Number($('#restLength').value));
   $('#restLength').onchange=ev=>storageWrite(restKey,ev.target.value);
   root.querySelectorAll('[data-load],[data-reps]').forEach(input=>input.addEventListener('input',()=>{
     const values=getSets(state.workout,e),j=Number(input.dataset.load??input.dataset.reps),isLoad=input.dataset.load!==undefined;

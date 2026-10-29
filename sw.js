@@ -1,7 +1,7 @@
 importScripts('./offline-media.js');
-const CACHE = 'meu-treino-silo-web-v15-1';
+const CACHE = 'meu-treino-silo-web-v16-principal-1';
 const FILES = ['./','./index.html','./styles.css','./workouts.js','./app.js','./progress.js','./backup.js','./drive.js','./manifest.json','./icon-192.png','./icon-512.png','./favicon.png','./cadeira-extensora.jpg','./peck-invertido.jpg','./elevacao-lateral.jpg','./bird-dog.jpg','./puxada-triangulo.jpg','./pulley-frente.jpg','./remada-maquina-apoio.jpg','./cadeira-adutora.jpg','./cadeira-flexora.jpg','./panturrilha-maquina.jpg','./triceps-maquina.jpg','./dead-bug.jpg','./supino-inclinado.jpg','./supino-reto-maquina.jpg','./rosca-martelo.jpg','./elevacao-pelvica.jpg','./crucifixo-maquina.jpg','./cadeira-abdutora.jpg','./rosca-alternada.jpg','./crucifixo-inclinado.jpg'];
-FILES.push('./offline-media.js', ...OFFLINE_MEDIA);
+FILES.push('./offline-media.js', './principal.js', './generated/supino-inclinado-maquina.png', ...OFFLINE_MEDIA);
 const ASSETS = new Set(FILES.map(file=>new URL(file,self.registration.scope).href));
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll([...new Set(FILES)]))));
 self.addEventListener('message',event=>{if(event.data?.type==='SKIP_WAITING')self.skipWaiting();});
