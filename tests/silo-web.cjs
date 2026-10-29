@@ -33,6 +33,7 @@ const server = http.createServer((req,res)=>{
     for(const [category,count] of [['principal',4],['base',3]]) {await page.locator(`[data-library="${category}"]`).click();assert.equal(await page.locator('[data-w]').count(),count);}
     await page.locator('[data-library="principal"]').click();await page.locator('[data-w="PR_A"]').click();
     await page.locator('[data-open="0"]').click();
+    if(process.env.SILO_DETAIL_PREVIEW) {await page.locator('.exerciseEntry.expanded').scrollIntoViewIfNeeded();await page.screenshot({path:process.env.SILO_DETAIL_PREVIEW});}
     assert.equal(await page.locator('.executionGuide').count(),1);
     assert.match(await page.locator('.trackerHelp').last().innerText(),/90–120 s/);
     await page.locator('#restLength').selectOption('120');await page.locator('[data-open="1"]').click();
@@ -67,6 +68,19 @@ const server = http.createServer((req,res)=>{
     await context.setOffline(true);await page.reload();
     assert.equal(await page.locator('#home').isVisible(),true);
     assert.equal(await page.evaluate(()=>getSets('PR_A',DB.PR_A.exercises[0])[0].load),10);
+    await page.setViewportSize({width:320,height:720});
+    await page.emulateMedia({reducedMotion:'reduce'});
+    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=document.documentElement.clientWidth),true);
+    await page.locator('#openNext').click();await page.locator('[data-open="0"]').click();
+    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=document.documentElement.clientWidth),true);
+    assert.ok((await page.locator('#load-0').boundingBox()).width>=70);
+    assert.ok((await page.locator('[data-set="0"]').boundingBox()).width>=44);
+    await page.locator('[data-tab="settings"]').click();
+    assert.equal(await page.locator('#transparency').isVisible(),true);
+    await page.locator('#transparency').evaluate(el=>{el.value='60';el.dispatchEvent(new Event('input',{bubbles:true}));});
+    assert.equal(await page.evaluate(()=>localStorage.getItem('ui::transparency')),'0.6');
+    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=document.documentElement.clientWidth),true);
+    if(process.env.SILO_SETTINGS_PREVIEW) await page.screenshot({path:process.env.SILO_SETTINGS_PREVIEW});
     assert.deepEqual(errors,[]);
     console.log('PASS: fichas, séries, guias, progresso, backups e funcionamento offline');
   } finally {if(browser)await browser.close();server.close();}

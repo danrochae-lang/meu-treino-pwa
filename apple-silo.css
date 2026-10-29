@@ -1,0 +1,137 @@
+/* Silo: uma interface de treino escura, com materiais discretos e movimento breve. */
+:root {
+  --bg: #08110c;
+  --bg2: #14221a;
+  --panel: rgba(18, 32, 23, var(--panel-opacity, .7));
+  --panel2: #24392b;
+  --text: #f4f8f2;
+  --muted: #bdcbbd;
+  --line: rgba(195, 222, 195, .19);
+  --amber: #a9d5a7;
+  --amber2: #d1e9cf;
+  --teal: #a9d5a7;
+  --shadow: 0 10px 32px rgba(0, 0, 0, .18);
+  --ease-out: cubic-bezier(.23, 1, .32, 1);
+  color-scheme: dark;
+}
+html { scroll-padding-top: 110px; }
+body {
+  background: linear-gradient(180deg, rgba(5, 14, 8, .82), rgba(6, 17, 10, .9)), url('silo-chamber.png') center/cover fixed;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: 0;
+  -webkit-font-smoothing: antialiased;
+}
+.app { width: min(100%, 560px); padding-left: max(20px, env(safe-area-inset-left)); padding-right: max(20px, env(safe-area-inset-right)); }
+h1, h2, h3 { letter-spacing: -.025em; }
+p { max-width: 65ch; }
+.screen.active { animation: none; }
+.panel { border-color: var(--line); border-radius: 22px; box-shadow: var(--shadow); -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px); }
+.eyebrow { font: 650 .69rem/1.4 system-ui, sans-serif; letter-spacing: .08em; color: var(--amber2); }
+.homeHeader { min-height: 54px; }
+.brand { gap: 12px; }
+.brand img { width: 46px; height: 46px; border-radius: 14px; border: 1px solid rgba(255,255,255,.16); }
+.brand h1 { font-size: 1.45rem; font-weight: 650; letter-spacing: -.04em; }
+.brandDot { color: var(--amber); }
+.statusPill, .tinyBadge, .heroTag { border: 0; border-radius: 999px; background: rgba(214, 242, 217, .1); color: #d3e7d0; font: 600 .68rem/1.2 system-ui, sans-serif; padding: 7px 10px; }
+.homeGreeting { margin: 24px 0 15px; color: var(--muted); font-size: .86rem; }
+.homeGreeting span { font-size: .7rem; }
+.hero { margin-left: -20px; margin-right: -20px; padding: 28px 20px 0; min-height: 430px; border: 0; border-radius: 0; box-shadow: none; background: linear-gradient(0deg,#08110c 0%,rgba(8,17,12,.96) 8%,rgba(8,17,12,.78) 27%,rgba(8,17,12,.28) 62%,rgba(8,17,12,.12) 100%),url('silo-hero.png') center 33%/cover; }
+.heroTitle { align-items: baseline; flex-wrap: wrap; gap: 10px; margin: 11px 0 8px; }
+.heroTitle h2 { color: white; font-size: clamp(2.35rem, 10vw, 3rem); font-weight: 700; letter-spacing: -.055em; line-height: 1.05; }
+.heroTag { background: rgba(224, 246, 224, .14); color: #e4f3e0; }
+.heroContent>p { max-width: none; font-size: 1rem; color: #e4ede1; }
+.heroMetrics { margin: 11px 0 20px; font-size: .78rem; color: #d2ded0; }
+.primary { min-height: 54px; border-radius: 999px; background: #a9d5a7; color: #102116; font-size: .94rem; font-weight: 700; box-shadow: 0 4px 18px rgba(0,0,0,.16); }
+.hero .primary { width: 100%; margin-bottom: 18px; }
+.heroBottom { border-color: rgba(255,255,255,.13); font-size: .76rem; padding: 13px 0; }
+.miniRing { background: conic-gradient(var(--teal) var(--pct), rgba(211,233,210,.2) 0); }
+.miniRing:before { background: #101e15; }
+.weekStrip { margin-top: 18px; padding: 14px 12px; gap: 4px; border-radius: 20px; background: rgba(23, 40, 28, .68); border: 1px solid rgba(220,241,220,.08); }
+.weekSummary strong { font-size: 1.5rem; font-weight: 650; font-variant-numeric: tabular-nums; }
+.weekSummary small, .day { font-size: .64rem; }
+.day i { width: 27px; height: 27px; font: 600 .7rem system-ui, sans-serif; font-variant-numeric: tabular-nums; }
+.sectionTitle { margin: 28px 0 14px; }
+.sectionTitle h2 { font-size: 1.4rem; font-weight: 700; letter-spacing: -.035em; }
+.segmented { padding: 4px; border: 0; border-radius: 15px; background: rgba(152, 185, 156, .12); }
+.segmented button { min-height: 44px; font-size: .84rem; font-weight: 600; border-radius: 12px; }
+.segmented button[aria-pressed=true] { color: #f5fff2; background: rgba(177, 214, 177, .18); box-shadow: 0 2px 8px rgba(0,0,0,.16); }
+.libraryHint { font-size: .8rem; line-height: 1.5; margin: 12px 2px; }
+.workoutGrid { gap: 10px; }
+.workoutCard { grid-template-columns: 52px 1fr 20px; gap: 14px; padding: 16px; border-color: rgba(225,245,224,.1); }
+.workoutCode { width: 52px; min-height: 52px; border: 0; border-radius: 16px; background: rgba(185,222,187,.1); color: #d8ecd4; font: 650 1.2rem system-ui, sans-serif; }
+.workoutCode small { font: 650 .5rem system-ui, sans-serif; letter-spacing: .04em; }
+.workoutCard h3 { font-size: 1rem; font-weight: 650; }
+.workoutCard p, .workoutCard .cardFocus, .cardMeta { font-size: .75rem; color: var(--muted); }
+.guide { padding: 17px; border-style: solid; }
+.topbar { margin: 14px 0; gap: 12px; }
+.topbar h1 { font-size: 1.65rem; font-weight: 700; letter-spacing: -.04em; }
+.iconBtn { min-width: 44px; min-height: 44px; border: 0; border-radius: 50%; background: rgba(197,225,197,.11); font-size: 1.55rem; }
+.sessionOverview { margin-left: -20px; margin-right: -20px; min-height: 245px; padding: 24px 20px; border: 0; border-radius: 0; box-shadow: none; }
+.overviewText h2 { font-size: 1.65rem; font-weight: 700; }
+.overviewText p { font-size: .88rem; }
+.preparation { margin-top: 14px; }
+.preparation summary { min-height: 52px; font-size: .9rem; }
+.sheetProgress { margin: 0 0 12px; top: max(8px, env(safe-area-inset-top)); z-index: 20; padding: 12px 15px; border-radius: 18px; background: rgba(15,30,20,.92); border: 1px solid rgba(225,245,225,.13); box-shadow: 0 8px 24px #0003; -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px); }
+.progressTop { font-size: .75rem; font-variant-numeric: tabular-nums; }
+.progressTrack { height: 5px; border-radius: 99px; }
+.progressBar { border-radius: 99px; }
+.activeExercise { font-size: .87rem; font-weight: 650; }
+.sectionTitle.compact h2 { font-size: 1.18rem; font-weight: 700; }
+.exerciseList { display: grid; gap: 10px; }
+.exerciseEntry { scroll-margin-top: 112px; border: 1px solid rgba(225,245,224,.1); border-radius: 20px; background: var(--panel); }
+.exerciseEntry.expanded { overflow: visible; background: transparent; border-color: transparent; }
+.exerciseEntry.expanded>.listItem { border-radius: 20px; background: rgba(35,58,40,.72); border: 1px solid rgba(216,240,217,.15); }
+.listItem { min-height: 82px; padding: 14px; grid-template-columns: 42px minmax(0,1fr) 24px; gap: 12px; }
+.listItem h3 { font-size: .95rem; line-height: 1.28; font-weight: 650; }
+.listItem p, .listItem .exStatus { font: .76rem/1.4 system-ui, sans-serif; color: var(--muted); }
+.exNumber { font-variant-numeric: tabular-nums; }
+.inlineDetail { padding: 10px 0 16px; border: 0; }
+.exerciseVisual { margin: 8px -20px 0; border-radius: 0; }
+.exerciseVisual img, .spriteVisual { min-height: 235px; }
+.exerciseVisual img[src$='.jpg'] { transform: scale(1.23); }
+.exerciseVisual::after { content: ''; position: absolute; inset: 45% 0 0; pointer-events: none; background: linear-gradient(0deg, rgba(8,17,12,.93), rgba(8,17,12,.35) 38%, transparent); }
+.exerciseVisual small { z-index: 1; border-radius: 999px; font: 650 .62rem system-ui, sans-serif; letter-spacing: .06em; }
+.targetLabel { font-size: .9rem; margin-top: 14px; }
+.cue, .executionGuide { font-size: .88rem; line-height: 1.55; }
+.executionGuide h3 { font-size: .72rem; margin-top: 20px; }
+.trackerTitle { margin: 24px 0 8px; }
+.trackerTitle h3 { font-size: 1.12rem; font-weight: 700; }
+.trackerTitle span, .setHead { font-size: .72rem; }
+.setHead, .setRow { grid-template-columns: 29px minmax(0,1fr) minmax(0,1fr) 48px; gap: 8px; }
+.setRow { padding: 7px 0; border-color: rgba(230,245,230,.08); }
+.setRow label { font: 650 .82rem system-ui, sans-serif; font-variant-numeric: tabular-nums; }
+.setRow input { min-height: 50px; border-radius: 13px; border-color: rgba(218,239,218,.17); background: rgba(27,47,33,.85); text-align: center; font-size: 1rem; font-variant-numeric: tabular-nums; }
+.setRow input:focus { outline: 2px solid #c0e4bd; outline-offset: 1px; }
+.setRow button { width: 48px; height: 48px; border-radius: 14px; }
+.trackerHelp { font-size: .76rem; line-height: 1.5; }
+.restControl { display: grid; grid-template-columns: 1fr 1fr; gap: 0; overflow: hidden; border: 1px solid rgba(193,224,192,.35); border-radius: 16px; }
+.restControl select { min-height: 50px; border: 0; border-radius: 0; background: rgba(22,40,27,.85); font-size: .84rem; padding: 0 12px; }
+.restControl button { min-height: 50px; border: 0; border-radius: 0; background: #a9d5a7; color: #102116; font-size: .84rem; font-weight: 700; }
+.referenceBtn, .secondaryBtn, .backupActions button { min-height: 48px; border-radius: 14px; font-size: .84rem; }
+.instruction { font-size: .88rem; }
+.settingsBlock { padding: 20px; }
+.settingsBlock h2 { font-size: 1.12rem; font-weight: 700; }
+.settingsBlock p, .settingsBlock summary, .settingsBlock label { font-size: .84rem; line-height: 1.5; }
+.bottomNav { bottom: max(12px, env(safe-area-inset-bottom)); width: min(calc(100% - 32px), 500px); padding: 5px; border-radius: 23px; border-color: rgba(235,255,234,.13); background: rgba(19,35,24,.88); box-shadow: 0 10px 35px #0005; -webkit-backdrop-filter: blur(22px); backdrop-filter: blur(22px); }
+.tab { min-height: 53px; border-radius: 18px; font-size: .7rem; font-weight: 600; }
+.tab.active { background: rgba(188,225,188,.13); color: #e4f4e0; }
+.loadDialog { border-radius: 26px; background: #192b1f; }
+.timerToast { border-color: rgba(210,240,210,.22); background: rgba(25,45,30,.96); border-radius: 20px; -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px); }
+.timerToast strong { font-variant-numeric: tabular-nums; }
+button, a { touch-action: manipulation; }
+button { transition: transform 140ms var(--ease-out), background-color 140ms ease, color 140ms ease; }
+button:active:not(:disabled) { transform: scale(.98); }
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible { outline: 2px solid #d7f1d4; outline-offset: 3px; }
+@media (max-width: 360px) {
+  .app { padding-left: 16px; padding-right: 16px; }
+  .hero, .sessionOverview { margin-left: -16px; margin-right: -16px; }
+  .exerciseVisual { margin-left: -16px; margin-right: -16px; }
+  .weekStrip { padding-inline: 8px; }
+  .day i { width: 24px; height: 24px; }
+  .setHead, .setRow { grid-template-columns: 24px minmax(0,1fr) minmax(0,1fr) 44px; gap: 5px; }
+  .setRow button { width: 44px; height: 44px; }
+}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; } button:active:not(:disabled) { transform: none; } }
+@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) { .panel, .exerciseEntry, .bottomNav, .sheetProgress, .timerToast { background: #15271b; -webkit-backdrop-filter: none; backdrop-filter: none; } }

@@ -119,7 +119,7 @@ function drawInlineDetail(i) {
     guide.innerHTML=`<h3>Como executar</h3><p>${escapeHTML(e.guide.setup)}</p><ol>${e.guide.steps.map(x=>`<li>${escapeHTML(x)}</li>`).join('')}</ol><h3>Pontos de atenção</h3><ul>${e.guide.watch.map(x=>`<li>${escapeHTML(x)}</li>`).join('')}</ul>${e.guide.animation?`<details><summary>Ver animação técnica</summary><img class="technicalAnimation" data-src="${escapeHTML(e.guide.animation)}" alt="Animação de ${escapeHTML(e.name)}"></details>`:''}`;
     const animation=guide.querySelector('details');
     animation?.addEventListener('toggle',()=>{const img=animation.querySelector('img');if(animation.open)img.src=img.dataset.src;else img.removeAttribute('src');});
-    root.querySelector('.trackerTitle').before(guide);
+    root.querySelector('.restControl').after(guide);
   }
   if(e.prefillLoad===false) {
     root.querySelectorAll('[data-load]').forEach((input,j)=>{if(getSets(state.workout,e)[j]?.load==null)input.value='';});
