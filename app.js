@@ -121,7 +121,10 @@ function drawInlineDetail(i) {
     animation?.addEventListener('toggle',()=>{const img=animation.querySelector('img');if(animation.open)img.src=img.dataset.src;else img.removeAttribute('src');});
     root.querySelector('.trackerTitle').before(guide);
   }
-  if(e.prefillLoad===false) root.querySelectorAll('[data-load]').forEach((input,j)=>{if(getSets(state.workout,e)[j]?.load==null)input.value='';});
+  if(e.prefillLoad===false) {
+    root.querySelectorAll('[data-load]').forEach((input,j)=>{if(getSets(state.workout,e)[j]?.load==null)input.value='';});
+    root.querySelector('#loadBtn')?.remove();
+  }
   const restHelp=document.createElement('p');restHelp.className='trackerHelp';restHelp.textContent=`Descanso sugerido: ${e.rest}.`;root.querySelector('.restControl').before(restHelp);
   const videoLink=root.querySelector('.instruction');if(videoLink&&!e.videoDirect&&state.workout.startsWith('PR_'))videoLink.firstChild.textContent='Buscar vídeos de execução · YouTube ';
   $('#loadBtn')?.addEventListener('click',()=>openLoad(e));$('#restBtn').onclick=()=>startRestTimer(Number($('#restLength').value));

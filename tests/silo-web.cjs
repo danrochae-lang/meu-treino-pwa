@@ -43,6 +43,7 @@ const server = http.createServer((req,res)=>{
     await page.evaluate(()=>localStorage.setItem('carga::leg_press','180'));
     await page.locator('[data-open="6"]').click();
     assert.equal(await page.locator('#load-0').inputValue(),'');
+    assert.equal(await page.locator('#loadBtn').count(),0);
     assert.equal(await page.locator('#restLength').inputValue(),'90');
     await page.locator('[data-open="1"]').click();assert.equal(await page.locator('.exerciseEntry.expanded').count(),1);
     assert.match(await page.locator('#sheetProgress').innerText(),/Puxada frontal/);
