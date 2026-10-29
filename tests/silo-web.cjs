@@ -18,7 +18,7 @@ const server = http.createServer((req,res)=>{
     browser=await chromium.launch({headless:true, executablePath:process.env.CHROMIUM_EXECUTABLE||'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe'});
     const context=await browser.newContext({viewport:{width:412,height:915},isMobile:true,hasTouch:true});
     const page=await context.newPage(), errors=[]; page.on('pageerror',e=>errors.push(e.message));
-    await page.goto(`http://127.0.0.1:${server.address().port}/`);
+    await page.goto(process.env.SILO_URL || `http://127.0.0.1:${server.address().port}/`);
     await page.waitForFunction(()=>typeof validateBackup==='function');
     if(process.env.SILO_PREVIEW) await page.screenshot({path:process.env.SILO_PREVIEW,fullPage:true});
     assert.equal(await page.evaluate(()=>Object.keys(DB).length),12);
