@@ -4,6 +4,9 @@ const $$ = s => [...document.querySelectorAll(s)];
 const state = { screen: 'home', workout: 'A', expanded: -1, library: 'base', timer: null, loadId: null, day: null };
 const restKey = 'rest::seconds', timerKey = 'rest::until';
 const REST_OPTIONS = [30, 45, 60, 90, 120, 180];
+let keyboardHideTimeout;
+document.addEventListener('focusin',event=>{if(event.target.matches('.setRow input')){clearTimeout(keyboardHideTimeout);document.body.classList.add('editing');}});
+document.addEventListener('focusout',event=>{if(event.target.matches('.setRow input')){clearTimeout(keyboardHideTimeout);keyboardHideTimeout=setTimeout(()=>{if(!document.activeElement?.matches('.setRow input'))document.body.classList.remove('editing');},600);}});
 const escapeHTML = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function storageRead(key) { try { return localStorage.getItem(key); } catch { return null; } }
 function storageWrite(key, value) {
@@ -32,7 +35,7 @@ function nextWorkout() {
   const last = hist().slice().sort((a,b)=>b.at.localeCompare(a.at)).find(x => ['A','B','C'].includes(DB[x.workout]?.family || x.workout));
   const seq = ['A','B','C'];
   const family = last ? seq[(seq.indexOf(DB[last.workout]?.family || last.workout)+1)%3] : 'A';
-  return getPreferred(family);
+  return family;
 }
 function muscleMap(regions, label='Áreas trabalhadas') {
   const posterior = regions.includes('back') && !regions.includes('chest');
@@ -49,7 +52,7 @@ function show(screen) {
 function toast(message) { clearTimeout(state.toastTimeout); $('#toast').textContent=message; $('#toast').hidden=false; state.toastTimeout=setTimeout(()=>$('#toast').hidden=true,3500); }
 function renderHome() {
   const n=nextWorkout(),w=DB[n],count=processed(n),total=w.exercises.length;
-  $('#nextWorkout').textContent='Treino '+n; $('#nextVariant').textContent=w.variant;
+  $('#nextWorkout').textContent='Treino '+n; $('#nextVariant').textContent='Lifetime';
   $('#nextWorkoutSub').textContent=w.name; $('#heroMetrics').innerHTML=`<span>${total} exercícios</span><span>~${w.duration} min</span>`;
   $('#heroMap').innerHTML=muscleMap(w.regions,w.focus);
   $('#heroProgress').innerHTML=`<span class="miniRing" style="--pct:${Math.round(count/total*100)}%"></span><span>${count ? `${count}/${total} exercícios resolvidos hoje` : 'Sua ficha está pronta para começar'}</span>`;
@@ -61,8 +64,8 @@ function renderHome() {
   renderLibrary();
 }
 function renderLibrary() {
-  const keys={base:['A','B','C'],variation:['A2','B2','C2'],flex:['D','E']}[state.library];
-  $('#libraryHint').textContent={base:'Sua rotina A/B/C. Abra uma ficha para escolher a versão que quer fazer.',variation:'Outra ênfase para a mesma sessão. A2 substitui A; B2 substitui B; C2 substitui C.',flex:'Alternativas para semanas diferentes: superiores ou corpo inteiro. Use no lugar de uma sessão.'}[state.library];
+  const keys={base:['A','B','C'],classic:['CL_A','CL_B','CL_C'],flex:['D','E','FB']}[state.library];
+  $('#libraryHint').textContent={base:'Sua rotina A/B/C.',classic:'Treinos A, B e C da Primata Fitness.',flex:'Alternativas de corpo inteiro e superiores.'}[state.library];
   $$('[data-library]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.library===state.library)));
   $('#workoutGrid').innerHTML=keys.map(k=>{const w=DB[k],n=processed(k);return `<button class="workoutBtn" data-w="${k}"><article class="panel workoutCard"><div class="workoutCode">${k}<small>${w.variant==='Padrão'?'BASE':'ALT'}</small></div><div><h3>${w.name}</h3><p class="cardFocus">${w.focus}</p><div class="cardMeta"><span>${w.exercises.length} exercícios</span><span>~${w.duration} min</span>${n?`<span>${n}/${w.exercises.length}</span>`:''}</div>${n?`<div class="cardProgress"><span style="width:${n/w.exercises.length*100}%"></span></div>`:''}</div><span class="arrow" aria-hidden="true">↗</span></article></button>`}).join('');
   $$('[data-w]').forEach(b=>b.onclick=()=>openSheet(b.dataset.w));
@@ -71,20 +74,24 @@ function openSheet(k) {
   if(!DB[k])return;
   state.workout=k;state.expanded=-1;
   const w=DB[k];
-  if(['A','B','C'].includes(w.family))storageWrite('plan::'+w.family,k);
-  $('#sheetTitle').textContent='Treino '+k; $('#sheetEyebrow').textContent=w.variant+' / '+w.code;
+  $('#sheetTitle').textContent=k.startsWith('CL_')?'Primata '+k.slice(-1):k==='FB'?'Full Body':'Treino '+k; $('#sheetEyebrow').textContent=w.code;
   $('#sheetSub').textContent=w.name; $('#sheetFocus').textContent=w.focus;
+  const [poster, quadrant]=w.exercises[0].img.split('#');
+  const overview=$('.sessionOverview');
+  overview.style.backgroundImage=`linear-gradient(0deg,#09130df5,#09130d50),url("${poster}")`;
+  overview.style.backgroundSize=quadrant===undefined?'cover':'100% 100%, 200% 200%';
+  overview.style.backgroundPosition=quadrant===undefined?'center':`center, ${Number(quadrant)%2?'100%':'0%'} ${Number(quadrant)>1?'100%':'0%'}`;
   $('#overviewMetrics').innerHTML=`<span>${w.exercises.length} exercícios</span><span>~${w.duration} min estimados</span>`;
   $('#sheetMap').innerHTML=muscleMap(w.regions,w.focus); $('#sheetCount').textContent=w.exercises.length+' EX';
   $('#warmup').textContent=w.warmup;$('#cardio').textContent=w.cardio;$('#note').textContent=w.note;
-  const variants=Object.entries(DB).filter(([,item])=>item.family===w.family);
+  const variants=[];
   $('#variantPicker').innerHTML=variants.length>1?variants.map(([key,item])=>`<button data-variant="${key}" aria-pressed="${key===k}">${item.variant} <span>${key}</span></button>`).join(''):'';
   $$('[data-variant]').forEach(b=>b.onclick=()=>openSheet(b.dataset.variant));
   drawInlineList();show('sheet');
 }
 function sheetProgress() {
   const w=DB[state.workout],done=getDone(state.workout),n=processed(state.workout),skipped=w.exercises.filter(e=>done[e.id]==='skipped').length;
-  $('#sheetProgress').innerHTML=`<div class="progressTop"><span>${n}/${w.exercises.length} resolvidos${skipped?` · ${skipped} pulados`:''}</span><span>${Math.round(n/w.exercises.length*100)}%</span></div><div class="progressTrack"><div class="progressBar" style="width:${n/w.exercises.length*100}%"></div></div>`;
+  $('#sheetProgress').innerHTML=`<div class="progressTop"><span>${n}/${w.exercises.length} resolvidos${skipped?` · ${skipped} pulados`:''}</span><span>${Math.round(n/w.exercises.length*100)}%</span></div><div class="progressTrack"><div class="progressBar" style="width:${n/w.exercises.length*100}%"></div></div>${state.expanded>=0?`<strong class="activeExercise">${escapeHTML(w.exercises[state.expanded].name)}</strong>`:''}`;
   const finished=n===w.exercises.length;
   $('#startWorkout').innerHTML=finished?(skipped===w.exercises.length?'Todos pulados hoje <span>—</span>':'Sessão finalizada <span>✓</span>'):n?'Abrir próximo exercício <span>↓</span>':'Começar sessão <span>↓</span>';
   $('#startWorkout').disabled=finished;
@@ -99,6 +106,22 @@ function drawInlineDetail(i) {
   const e=DB[state.workout].exercises[i],root=$('#detail-'+i);if(!root)return;
   const sets=getSets(state.workout,e),done=getDone(state.workout)[e.id];
   root.innerHTML=`${e.reference? '':`<div class="exerciseVisual"><img src="${e.img}" alt="Referência de ${e.name}" loading="lazy"><small>REFERÊNCIA VISUAL</small></div>`}<div class="targetLabel">${e.target}${e.secondary?` <span>· ${e.secondary}</span>`:''}</div><p class="cue">${e.cue}</p><div class="trackerTitle"><h3>Registre suas séries</h3><span>${e.reps}</span></div><div class="setHead"><span>Série</span><span>${e.bodyweight?'Corpo':'kg'}</span><span>Reps</span><span>Feito</span></div>${Array.from({length:setCount(e)},(_,j)=>{const s=sets[j]||{},load=s.load??(e.bodyweight?0:getLoad(e.id));return `<div class="setRow"><label for="load-${j}">${String(j+1).padStart(2,'0')}</label><input id="load-${j}" data-load="${j}" type="number" min="0" max="9999" step="0.5" inputmode="decimal" aria-label="Carga da série ${j+1} em kg" value="${escapeHTML(load)}" placeholder="—" ${e.bodyweight?'disabled':''}><input id="reps-${j}" data-reps="${j}" type="number" min="0" max="999" inputmode="numeric" aria-label="Repetições da série ${j+1}" value="${Number.isInteger(s.reps)?s.reps:''}" placeholder="—"><button data-set="${j}" class="${s.done?'checked':''}" aria-pressed="${!!s.done}" aria-label="${s.done?'Desmarcar':'Marcar'} série ${j+1}">${s.done?'✓':'○'}</button></div>`;}).join('')}<p class="trackerHelp">${e.reps.includes('/ lado')?'Registre repetições por lado. Marque após fazer os dois lados. ':''}O exercício conclui quando todas as séries forem marcadas.</p><div class="exerciseActions">${e.bodyweight?'<span class="targetLabel">Sem carga externa</span>':`<button id="loadBtn" class="referenceBtn">Carga de referência: ${getLoad(e.id)===''?'definir':getLoad(e.id)+' kg'}</button>`}</div><div class="restControl"><select id="restLength" aria-label="Tempo de descanso">${REST_OPTIONS.map(s=>`<option value="${s}" ${getRest(e)===s?'selected':''}>${s}s de descanso</option>`).join('')}</select><button id="restBtn">◷ Iniciar descanso</button></div><a class="instruction" href="${e.url}" target="_blank" rel="noopener noreferrer">Ver execução · YouTube <span aria-hidden="true">↗</span></a><div class="skipActions"><button class="textBtn" id="skipExercise">${done==='skipped'?'Reincluir exercício':'Pular hoje'}</button><button class="textBtn" id="inlineDone">${done===true?'Desmarcar exercício':'Concluir sem séries'}</button></div>`;
+  const image=root.querySelector('.exerciseVisual img');
+  if(image && e.img.includes('#')) {
+    const [path,part]=e.img.split('#'), index=Number(part), holder=image.parentElement;
+    image.remove(); holder.classList.add('spriteVisual');
+    holder.style.backgroundImage=`linear-gradient(0deg,#0b1410,transparent 55%),url("${path}")`;
+    holder.style.backgroundSize='100% 100%, 200% 200%';
+    holder.style.backgroundPosition=`center, ${index%2?'100%':'0%'} ${index>1?'100%':'0%'}`;
+  }
+  if(e.guide) {
+    const guide=document.createElement('div'); guide.className='executionGuide';
+    guide.innerHTML=`<h3>Como executar</h3><p>${escapeHTML(e.guide.setup)}</p><ol>${e.guide.steps.map(x=>`<li>${escapeHTML(x)}</li>`).join('')}</ol><h3>Pontos de atenção</h3><ul>${e.guide.watch.map(x=>`<li>${escapeHTML(x)}</li>`).join('')}</ul>${e.guide.animation?`<details><summary>Ver animação técnica</summary><img class="technicalAnimation" data-src="${escapeHTML(e.guide.animation)}" alt="Animação de ${escapeHTML(e.name)}"></details>`:''}`;
+    const animation=guide.querySelector('details');
+    animation?.addEventListener('toggle',()=>{const img=animation.querySelector('img');if(animation.open)img.src=img.dataset.src;else img.removeAttribute('src');});
+    root.querySelector('.trackerTitle').before(guide);
+  }
+  if(e.prefillLoad===false) root.querySelectorAll('[data-load]').forEach((input,j)=>{if(getSets(state.workout,e)[j]?.load==null)input.value='';});
   $('#loadBtn')?.addEventListener('click',()=>openLoad(e));$('#restBtn').onclick=()=>startRestTimer(getRest(e));
   $('#restLength').onchange=ev=>storageWrite(restKey,ev.target.value);
   root.querySelectorAll('[data-load],[data-reps]').forEach(input=>input.addEventListener('input',()=>{
@@ -135,7 +158,14 @@ function updateCompletion(e,status) {
 }
 function openLoad(e) {state.loadId=e.id;$('#loadTitle').textContent=e.name;$('#loadInput').value=getLoad(e.id);$('#loadOverlay').showModal();$('#loadInput').focus();$('#loadInput').select();}
 function closeLoad() {$('#loadOverlay').close();$('#loadBtn')?.focus({preventScroll:true});}
-function setTheme(theme) {theme=theme==='light'?'light':'dark';document.documentElement.dataset.theme=theme;storageWrite('theme',theme);$('meta[name="theme-color"]').content=theme==='light'?'#f0f1e9':'#101713';$$('[data-theme-option]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.themeOption===theme)));}
+function setTheme() {document.documentElement.dataset.theme='dark';$('meta[name="theme-color"]').content='#101713';}
+function applyTransparency(value) {
+  const n=Math.max(0,Math.min(80,Number(value)||0));
+  document.documentElement.style.setProperty('--panel-opacity',String(1-n/100*.75));
+  $('#transparency').value=n; $('#transparencyValue').textContent=`${n}%`;
+}
+applyTransparency((Number(storageRead('ui::transparency') ?? .4))*100);
+$('#transparency').addEventListener('input',e=>{applyTransparency(e.target.value);storageWrite('ui::transparency',String(Number(e.target.value)/100));});
 function renderHistory() {
   renderChart();
   const h=hist().slice().sort((a,b)=>b.at.localeCompare(a.at));
@@ -144,7 +174,7 @@ function renderHistory() {
 let toastEnd;
 async function restNotification(title,body,renotify=false) {
   if(!('Notification' in window)||Notification.permission!=='granted'||!('serviceWorker' in navigator))return;
-  try {const reg=await navigator.serviceWorker.ready;await reg.showNotification(title,{body,tag:'silo-rest',renotify,icon:'icon-192.png',badge:'favicon.png',vibrate:renotify?[180,100,180]:undefined});}catch{}
+  try {const reg=await navigator.serviceWorker.ready;await reg.showNotification(title,{body,tag:'silo-rest',renotify,icon:'silo-icon.png',badge:'favicon.png',vibrate:renotify?[180,100,180]:undefined});}catch{}
 }
 function cancelRest() {clearInterval(state.timer);clearTimeout(toastEnd);state.timer=null;localStorage.removeItem(timerKey);localStorage.removeItem('rest::duration');$('#timerToast').hidden=true;try{window.SiloAndroid?.stopRestTimer?.();}catch{}if('serviceWorker' in navigator)navigator.serviceWorker.ready.then(r=>r.getNotifications({tag:'silo-rest'}).then(ns=>ns.forEach(n=>n.close()))).catch(()=>{});}
 function refreshRest() {

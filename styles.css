@@ -5,4 +5,17 @@
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 
 /* Deixa mais espaço para digitar com o teclado aberto. */
-body:has(.setRow input:focus) .bottomNav{display:none}
+body.editing .bottomNav{display:none}
+
+/* Identidade Silo: superfície verde translúcida sobre a câmara. */
+:root{--panel-opacity:.7;--bg:#09130d;--bg2:#13231a;--panel:rgba(19,35,25,var(--panel-opacity));--panel2:#20392b;--text:#eff6ed;--muted:#b7cbb8;--line:#47644d;--amber:#9bcb9a;--amber2:#c7e4c4;--teal:#86bfa0;--shadow:0 12px 35px #0005}
+body{background:linear-gradient(#07110bd9,#08150ed1),url('silo-chamber.png') center/cover fixed}
+.panel{backdrop-filter:blur(8px);box-shadow:var(--shadow)}
+.hero{border:0;border-radius:0;min-height:410px;margin:0 -18px;background:linear-gradient(0deg,#09130d 0%,#09130d75 55%,#09130d10),url('silo-hero.png') center/cover;display:flex;flex-direction:column;justify-content:flex-end;padding:24px 20px 0}
+.hero:before,.heroMap{display:none}.heroContent{width:100%}.heroContent>p{color:#e7f2e5}.hero .primary{width:100%}.heroBottom{border-color:#ffffff35}
+.sessionOverview{margin-left:-18px;margin-right:-18px;min-height:220px;border:0;border-radius:0;background-repeat:no-repeat;display:flex;align-items:flex-end}.sessionOverview .smallMap{display:none}.sessionOverview .overviewText{width:100%}.sessionOverview h2,.sessionOverview p{color:#f3f8f1}
+.brand img{content:url('silo-icon.png')}.bottomNav{grid-template-columns:repeat(2,1fr);background:rgba(16,32,22,.9);backdrop-filter:blur(18px)}
+.bottomNav [data-tab=history]{display:none}.sheetProgress{position:sticky;top:max(0px,env(safe-area-inset-top));z-index:20;background:rgba(12,29,18,.96);backdrop-filter:blur(12px);padding:12px;border-radius:16px;border:1px solid var(--line)}
+.activeExercise{display:block;margin-top:8px;font-size:13px;color:var(--text)}
+.exerciseVisual{margin-left:-16px;margin-right:-16px;border-radius:0;overflow:hidden}.spriteVisual{height:250px;background-repeat:no-repeat}.technicalAnimation{display:block;max-width:100%;max-height:220px;margin:12px auto}.executionGuide{padding:12px 0;color:var(--text)}.executionGuide h3{color:var(--amber2);font-size:12px;text-transform:uppercase;letter-spacing:.08em;margin:14px 0 6px}.executionGuide li{margin:5px 0}.executionGuide summary{cursor:pointer;color:var(--amber2);padding:10px 0}
+#transparency{width:100%;accent-color:var(--amber);margin-top:12px}.segmented button{overflow-wrap:anywhere}.primary{background:linear-gradient(180deg,#b8dcb6,#92c294);box-shadow:0 5px 15px #0004}.setRow input{min-width:0}.tab.active{color:var(--amber2)}

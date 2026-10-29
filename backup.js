@@ -1,5 +1,5 @@
 // Formato compatível com os backups V13. Somente dados do app, nunca tokens.
-const BACKUP_KEY = /^(carga::[\w-]+|peso_[\w-]+|done::\d{4}-\d{2}-\d{2}::[\w-]+|sets::\d{4}-\d{2}-\d{2}::[\w-]+::[\w-]+|hist::sessions|rest::seconds|theme|plan::[ABC])$/;
+const BACKUP_KEY = /^(carga::[\w-]+|peso_[\w-]+|done::\d{4}-\d{2}-\d{2}::[\w-]+|sets::\d{4}-\d{2}-\d{2}::[\w-]+::[\w-]+|hist::sessions|rest::seconds|theme|ui::transparency|plan::[ABC])$/;
 function makeBackup() {
   const data={};
   for(const key of Object.keys(localStorage))if(BACKUP_KEY.test(key))data[key]=storageRead(key);
@@ -19,6 +19,7 @@ function validateBackup(backup) {
     if(key==='hist::sessions'){const h=JSON.parse(value);if(!Array.isArray(h)||h.some(x=>!x||typeof x.key!=='string'||typeof x.workout!=='string'||typeof x.name!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(x.date)||!Number.isFinite(Date.parse(x.date+'T12:00:00'))||typeof x.at!=='string'||!Number.isFinite(Date.parse(x.at))))throw new Error('Sessões inválidas no backup.');}
     if(/^(carga::|peso_)/.test(key)&&(value!==''&&(!Number.isFinite(Number(value))||Number(value)<0||Number(value)>9999)))throw new Error('Carga inválida no backup.');
     if(key==='theme'&&!['light','dark'].includes(value))throw new Error('Tema inválido.');
+    if(key==='ui::transparency'&&(value.trim()===''||!Number.isFinite(Number(value))||Number(value)<0||Number(value)>0.8))throw new Error('Transparência inválida.');
     if(key==='rest::seconds'&&!REST_OPTIONS.includes(Number(value)))throw new Error('Descanso inválido.');
     if(key.startsWith('plan::')&&DB[value]?.family!==key.slice(6))throw new Error('Ficha preferida inválida.');
   }
@@ -35,7 +36,7 @@ function restoreBackupEntries(entries) {
     try{Object.keys(localStorage).filter(k=>BACKUP_KEY.test(k)).forEach(k=>localStorage.removeItem(k));original.forEach(([key,value])=>localStorage.setItem(key,value));}catch{}
     throw new Error('Não foi possível restaurar. Confira o espaço do aparelho; mantenha seu arquivo de backup.');
   }
-  setTheme(storageRead('theme')||'dark');refreshApp();
+  setTheme();applyTransparency((Number(storageRead('ui::transparency') ?? .4))*100);refreshApp();
 }
 $('#localBackup').onclick=()=>{
   try{const blob=new Blob([makeBackup()],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='meu-treino-backup-'+iso()+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);toast('Arquivo de backup gerado.');}catch{toast('Não foi possível exportar o backup.');}

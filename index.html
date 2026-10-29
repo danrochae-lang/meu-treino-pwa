@@ -6,11 +6,11 @@
 <meta name="theme-color" content="#101713">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<script>try{document.documentElement.dataset.theme=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme:light)').matches?'light':'dark')}catch{document.documentElement.dataset.theme='dark'}</script>
+<script>document.documentElement.dataset.theme='dark'</script>
 <title>Meu Treino // Silo</title>
 <link rel="manifest" href="manifest.json">
-<link rel="icon" href="favicon.png">
-<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" href="silo-icon.png">
+<link rel="apple-touch-icon" href="silo-icon.png">
 <link rel="stylesheet" href="styles.css">
 <script src="workouts.js" defer></script>
 <script src="app.js" defer></script>
@@ -25,17 +25,18 @@
   <div class="homeGreeting"><p>Seu próximo movimento.</p><span id="today"></span></div>
   <article class="hero panel" id="nextCard"><div class="heroContent"><span class="eyebrow">SUA SEQUÊNCIA A → B → C</span><div class="heroTitle"><h2 id="nextWorkout">Treino A</h2><span class="heroTag" id="nextVariant">Padrão</span></div><p id="nextWorkoutSub"></p><div class="heroMetrics" id="heroMetrics"></div><button class="primary" id="openNext">Abrir treino <span aria-hidden="true">↗</span></button></div><div id="heroMap" class="heroMap"></div><div class="heroBottom" id="heroProgress"></div></article>
   <div class="weekStrip" id="weekStrip" aria-label="Sessões nos últimos sete dias"></div>
-  <div class="sectionTitle"><div><span class="eyebrow">BIBLIOTECA</span><h2>Escolha sua sessão</h2></div><span class="tinyBadge">8 fichas</span></div>
-  <div class="segmented" role="group" aria-label="Categoria de treinos"><button data-library="base" aria-pressed="true">Padrão <span>03</span></button><button data-library="variation" aria-pressed="false">Variações <span>03</span></button><button data-library="flex" aria-pressed="false">Flexíveis <span>02</span></button></div>
+  <div class="sectionTitle"><div><span class="eyebrow">BIBLIOTECA</span><h2>Escolha sua sessão</h2></div><span class="tinyBadge">9 fichas</span></div>
+  <div class="segmented" role="group" aria-label="Categoria de treinos"><button data-library="base" aria-pressed="true">Lifetime</button><button data-library="classic" aria-pressed="false">Primata Fitness</button><button data-library="flex" aria-pressed="false">Full Body</button></div>
   <p id="libraryHint" class="libraryHint"></p><div id="workoutGrid" class="workoutGrid"></div>
-  <details class="panel guide"><summary><span>Como alternar as fichas</span><span aria-hidden="true">+</span></summary><p>Escolha A ou A2, B ou B2, C ou C2 no lugar da sessão correspondente. Mantenha uma opção por algumas semanas para comparar sua evolução. D e E são alternativas para reorganizar uma semana; não são sessões extras obrigatórias.</p><p>Respeite a recuperação dos mesmos músculos e sua orientação individual. As novas fichas são sugestões para validar com seu profissional, considerando a cirurgia e a discopatia lombar.</p><p>Aqueça 5–8 min e faça séries leves do primeiro exercício. Pare se sentir dor, formigamento ou tontura. Máquinas apoiadas também precisam de ajuste de carga e amplitude.</p></details>
+  <details class="panel guide"><summary><span>Orientações para o treino</span><span aria-hidden="true">+</span></summary><p>Respeite a recuperação e sua orientação individual. Aqueça antes do treino e ajuste as cargas e amplitudes de acordo com suas orientações.</p></details>
 </section>
 <section id="sheet" class="screen" aria-label="Ficha de treino">
+  <div id="sheetProgress" class="sheetProgress"></div>
   <header class="topbar"><button class="iconBtn" data-home aria-label="Voltar ao início">‹</button><div><span class="eyebrow" id="sheetEyebrow"></span><h1 id="sheetTitle"></h1></div><span class="tinyBadge" id="sheetCount"></span></header>
   <div id="variantPicker" class="segmented variantPicker" role="group" aria-label="Versão do treino"></div>
   <article class="panel sessionOverview"><div class="overviewText"><span class="eyebrow">ÊNFASE DA SESSÃO</span><h2 id="sheetSub"></h2><p id="sheetFocus"></p><div class="overviewMetrics" id="overviewMetrics"></div></div><div id="sheetMap" class="smallMap"></div></article>
   <details class="preparation panel"><summary>Preparação e orientação <span aria-hidden="true">⌄</span></summary><dl><dt>Aquecimento</dt><dd id="warmup"></dd><dt>Cardio</dt><dd id="cardio"></dd><dt>Como usar</dt><dd id="note"></dd></dl></details>
-  <div id="sheetProgress" class="sheetProgress"></div><div class="sectionTitle compact"><h2>Exercícios</h2><span>Toque para expandir</span></div><div id="exerciseList" class="exerciseList"></div>
+  <div class="sectionTitle compact"><h2>Exercícios</h2><span>Toque para expandir</span></div><div id="exerciseList" class="exerciseList"></div>
   <div class="sessionAction"><button id="startWorkout" class="primary">Continuar treino <span aria-hidden="true">↓</span></button></div>
 </section>
 <section id="history" class="screen" aria-label="Evolução">
@@ -43,12 +44,12 @@
   <div id="historyGraph" class="panel chartCard"></div><div class="sectionTitle compact"><h2>Sessões finalizadas</h2></div><div id="historyList"></div><button class="dangerBtn" id="clearHistory">Limpar histórico e gráficos</button>
 </section>
 <section id="settings" class="screen" aria-label="Ajustes">
-  <header class="topbar"><button class="iconBtn" data-home aria-label="Voltar ao início">‹</button><div><span class="eyebrow">DO SEU JEITO</span><h1>Ajustes</h1></div><span class="tinyBadge">V14</span></header>
-  <article class="panel settingsBlock"><h2>Aparência</h2><p>Escolha a iluminação do seu painel.</p><div class="themePicker"><button data-theme-option="light" aria-pressed="false">☀ <span>Claro</span></button><button data-theme-option="dark" aria-pressed="false">☾ <span>Escuro</span></button></div></article>
+  <header class="topbar"><button class="iconBtn" data-home aria-label="Voltar ao início">‹</button><div><span class="eyebrow">DO SEU JEITO</span><h1>Ajustes</h1></div><span class="tinyBadge">SILO</span></header>
+  <article class="panel settingsBlock"><h2>Transparência</h2><p>Ajuste quanto do fundo aparece atrás dos painéis.</p><label for="transparency">Transparência: <output id="transparencyValue">40%</output></label><input id="transparency" type="range" min="0" max="80" step="20" value="40"></article>
   <article class="panel settingsBlock"><h2>Backup em arquivo</h2><p>Salve uma cópia das cargas, séries e sessões. Você pode restaurar neste aparelho ou em outro.</p><div class="backupActions"><button id="localBackup">Exportar</button><button id="localRestore">Importar</button></div><input type="file" id="backupFile" accept="application/json,.json" hidden></article>
   <article class="panel settingsBlock"><h2>Google Drive</h2><p>Backup na área privada do app, usando sua conta Google.</p><details><summary>Configurar conexão</summary><label class="fieldLabel" for="googleClientId">ID OAuth Web do Google Cloud</label><input id="googleClientId" class="clientIdInput" placeholder="…apps.googleusercontent.com" autocomplete="off"><p class="helpText">Autorize a origem do site no cliente Web e ative a API do Drive.</p></details><div class="backupActions"><button id="driveBackup">Salvar no Drive</button><button id="driveRestore">Restaurar</button></div><div id="backupStatus" role="status" class="helpText"></div></article>
   <article class="panel settingsBlock"><h2>Dados do aparelho</h2><p>Seus registros são salvos enquanto você digita. Faça backup antes de limpar os dados do navegador ou trocar de aparelho.</p><button class="dangerBtn" id="resetToday">Limpar registros de hoje</button></article>
-  <article class="panel settingsBlock"><h2>Aplicativo</h2><p id="appVersion">Silo V14 · fichas e registros offline</p><button id="checkUpdate" class="secondaryBtn">Verificar atualização</button><div id="updateStatus" role="status" class="helpText"></div><p class="helpText">O descanso é corrigido pelo horário real ao voltar. Alertas em segundo plano dependem do Android.</p></article>
+  <article class="panel settingsBlock"><h2>Aplicativo</h2><p id="appVersion">Silo · fichas e registros offline</p><button id="checkUpdate" class="secondaryBtn">Verificar atualização</button><div id="updateStatus" role="status" class="helpText"></div><p class="helpText">O descanso é corrigido pelo horário real ao voltar. Se o navegador suspender o app, o aviso de fim pode atrasar ou aparecer ao retornar.</p></article>
 </section>
 </main>
 <nav class="bottomNav" aria-label="Navegação principal"><button class="tab active" data-tab="home" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10H6V10m3 10v-7h6v7"/></svg>Treinos</button><button class="tab" data-tab="history"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4v16h17M7 15l4-5 4 2 5-7"/></svg>Evolução</button><button class="tab" data-tab="settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="3"/><circle cx="15" cy="17" r="3"/></svg>Ajustes</button></nav>
