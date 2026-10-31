@@ -1,0 +1,12 @@
+const assert = require('node:assert/strict');
+(async()=>{const { validSubscription, validDeadline } = await import('../supabase/functions/silo-push/validation.js');
+const good = {endpoint:'https://fcm.googleapis.com/fcm/send/example',keys:{p256dh:'a'.repeat(87),auth:'b'.repeat(22)}};
+assert.equal(validSubscription(good),true);
+assert.equal(validSubscription({...good,endpoint:'https://evil.example/test'}),false);
+assert.equal(validSubscription({...good,endpoint:'https://fcm.googleapis.com.evil.example/test'}),false);
+assert.equal(validSubscription({...good,keys:{p256dh:'a',auth:'b'}}),false);
+assert.equal(validDeadline(1000,1100),true);
+assert.equal(validDeadline(1000,999),false);
+assert.equal(validDeadline(1000,1000+3601000),false);
+console.log('push validation passed');
+})().catch(e=>{console.error(e);process.exit(1)});

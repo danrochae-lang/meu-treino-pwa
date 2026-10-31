@@ -181,7 +181,7 @@ async function restNotification(title,body,renotify=false) {
   if(!('Notification' in window)||Notification.permission!=='granted'||!('serviceWorker' in navigator))return;
   try {const reg=await navigator.serviceWorker.ready;await reg.showNotification(title,{body,tag:'silo-rest',renotify,icon:'silo-icon.png',badge:'favicon.png',vibrate:renotify?[180,100,180]:undefined});}catch{}
 }
-function cancelRest() {clearInterval(state.timer);clearTimeout(toastEnd);state.timer=null;localStorage.removeItem(timerKey);localStorage.removeItem('rest::duration');$('#timerToast').hidden=true;try{window.SiloAndroid?.stopRestTimer?.();}catch{}if('serviceWorker' in navigator)navigator.serviceWorker.ready.then(r=>r.getNotifications({tag:'silo-rest'}).then(ns=>ns.forEach(n=>n.close()))).catch(()=>{});}
+function cancelRest() {const wasActive=!!storageRead(timerKey);clearInterval(state.timer);clearTimeout(toastEnd);state.timer=null;localStorage.removeItem(timerKey);localStorage.removeItem('rest::duration');$('#timerToast').hidden=true;try{window.SiloAndroid?.stopRestTimer?.();}catch{}if(wasActive&&!window.SiloAndroid?.startRestTimer)window.RestCloud?.cancel().catch(()=>toast('Não foi possível cancelar o aviso remoto; verifique a internet.'));if('serviceWorker' in navigator)navigator.serviceWorker.ready.then(r=>r.getNotifications({tag:'silo-rest'}).then(ns=>ns.forEach(n=>n.close()))).catch(()=>{});}
 function refreshRest() {
   const until=Number(storageRead(timerKey));if(!until)return;
   const left=Math.ceil((until-Date.now())/1000),duration=Number(storageRead('rest::duration'))||60;
@@ -195,9 +195,12 @@ function startRestTimer(seconds) {
   if(!storageWrite(timerKey,until))return;
   storageWrite('rest::duration',seconds);refreshRest();state.timer=setInterval(refreshRest,500);
   if(window.SiloAndroid?.startRestTimer){try{window.SiloAndroid.startRestTimer(until);return;}catch{}}
-  if('Notification' in window&&isSecureContext&&Notification.permission==='default')Notification.requestPermission().then(()=>restNotification('Descanso em andamento',`Intervalo de ${seconds}s.`)).catch(()=>{});
+  if(window.RestCloud?.enabled())window.RestCloud.start(until).catch(()=>toast('Aviso remoto indisponível. Mantenha o app aberto.'));
+  else if('Notification' in window&&isSecureContext&&Notification.permission==='default')Notification.requestPermission().then(()=>restNotification('Descanso em andamento',`Intervalo de ${seconds}s.`)).catch(()=>{});
   else restNotification('Descanso em andamento',`Intervalo de ${seconds}s.`);
 }
+$('#enableRestPush').onclick=async()=>{const status=$('#pushStatus');status.textContent='Ativando...';try{await window.RestCloud.activate($('#pushCode').value.trim());$('#pushCode').value='';status.textContent='Avisos ativados neste aparelho. Faça um teste com o app em segundo plano.';}catch(e){status.textContent=e.message||'Não foi possível ativar os avisos.';}};
+if(window.RestCloud?.enabled())$('#pushStatus').textContent='Avisos ativados neste aparelho.';
 function refreshApp() {renderHome();if(state.screen==='sheet')openSheet(state.workout);if(state.screen==='history')renderHistory();}
 $$('[data-home]').forEach(b=>b.onclick=()=>{renderHome();show('home');});
 $$('[data-tab]').forEach(b=>b.onclick=()=>{if(b.dataset.tab==='history')renderHistory();if(b.dataset.tab==='home')renderHome();show(b.dataset.tab);});

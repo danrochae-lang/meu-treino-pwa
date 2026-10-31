@@ -15,6 +15,7 @@
 <link rel="stylesheet" href="apple-silo.css">
 <script src="workouts.js" defer></script>
 <script src="principal.js" defer></script>
+<script src="rest-cloud.js" defer></script>
 <script src="app.js" defer></script>
 <script src="progress.js" defer></script>
 <script src="backup.js" defer></script>
@@ -50,6 +51,7 @@
   <article class="panel settingsBlock"><h2>Transparência</h2><p>Ajuste quanto do fundo aparece atrás dos painéis.</p><label for="transparency">Transparência: <output id="transparencyValue">40%</output></label><input id="transparency" type="range" min="0" max="80" step="20" value="40"></article>
   <article class="panel settingsBlock"><h2>Backup em arquivo</h2><p>Salve uma cópia das cargas, séries e sessões. Você pode restaurar neste aparelho ou em outro.</p><div class="backupActions"><button id="localBackup">Exportar</button><button id="localRestore">Importar</button></div><input type="file" id="backupFile" accept="application/json,.json" hidden></article>
   <article class="panel settingsBlock"><h2>Google Drive</h2><p>Backup na área privada do app, usando sua conta Google.</p><details><summary>Configurar conexão</summary><label class="fieldLabel" for="googleClientId">ID OAuth Web do Google Cloud</label><input id="googleClientId" class="clientIdInput" placeholder="…apps.googleusercontent.com" autocomplete="off"><p class="helpText">Autorize a origem do site no cliente Web e ative a API do Drive.</p></details><div class="backupActions"><button id="driveBackup">Salvar no Drive</button><button id="driveRestore">Restaurar</button></div><div id="backupStatus" role="status" class="helpText"></div></article>
+  <article class="panel settingsBlock"><h2>Avisos de descanso</h2><p>Receba um aviso ao terminar o intervalo mesmo ao usar outro aplicativo. Requer internet e notificações permitidas.</p><label class="fieldLabel" for="pushCode">Código de ativação do aparelho</label><input id="pushCode" class="clientIdInput" autocomplete="off" spellcheck="false"><button id="enableRestPush" class="secondaryBtn">Ativar avisos</button><div id="pushStatus" role="status" class="helpText"></div></article>
   <article class="panel settingsBlock"><h2>Dados do aparelho</h2><p>Seus registros são salvos enquanto você digita. Faça backup antes de limpar os dados do navegador ou trocar de aparelho.</p><button class="dangerBtn" id="resetToday">Limpar registros de hoje</button></article>
   <article class="panel settingsBlock"><h2>Aplicativo</h2><p id="appVersion">Silo · fichas e registros offline</p><button id="checkUpdate" class="secondaryBtn">Verificar atualização</button><div id="updateStatus" role="status" class="helpText"></div><p class="helpText">O descanso é corrigido pelo horário real ao voltar. Se o navegador suspender o app, o aviso de fim pode atrasar ou aparecer ao retornar.</p></article>
 </section>

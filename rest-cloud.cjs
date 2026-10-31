@@ -1,0 +1,8 @@
+const assert=require('node:assert/strict');const vm=require('node:vm');const fs=require('node:fs');const {webcrypto}=require('node:crypto');
+const store=new Map(), cache=new Map(),requests=[];
+const localStorage={getItem:k=>store.get(k)||null,setItem:(k,v)=>store.set(k,String(v))};
+const sub={toJSON:()=>({endpoint:'https://fcm.googleapis.com/fcm/send/a',keys:{p256dh:'a'.repeat(87),auth:'b'.repeat(22)}})};
+const ctx={window:{},localStorage,crypto:webcrypto,URL,Response,AbortSignal,Date,Promise,Uint8Array,atob,location:{href:'https://danrochae-lang.github.io/meu-treino-pwa/'},caches:{open:async()=>({put:async(k,v)=>cache.set(String(k),v)})},Notification:{permission:'granted'},navigator:{onLine:true,serviceWorker:{ready:Promise.resolve({pushManager:{getSubscription:async()=>sub}})}},fetch:async(url,opts)=>{const b=JSON.parse(opts.body);requests.push(b);return {ok:true,json:async()=>b.action==='key'?{publicKey:'AQ'}:{ok:true}}}};
+ctx.window.Notification=ctx.Notification;ctx.window.PushManager=function(){};ctx.window.RestCloud=undefined;
+vm.runInNewContext(fs.readFileSync('rest-cloud.js','utf8'),ctx);
+(async()=>{const c=ctx.window.RestCloud;await c.activate('a'.repeat(32));assert.equal(c.enabled(),true);const until=Date.now()+90000;const revision=await c.start(until);await c.cancel();const schedule=requests.find(x=>x.action==='schedule');const cancel=requests.filter(x=>x.action==='cancel').at(-1);assert.equal(schedule.until,until);assert.equal(schedule.revision,revision);assert.ok(cancel.revision>revision);assert.equal(await cache.values().next().value.text(),String(cancel.revision));console.log('rest-cloud activate, schedule and cancel passed');})().catch(e=>{console.error(e);process.exit(1)});
